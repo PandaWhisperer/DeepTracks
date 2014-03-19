@@ -1,11 +1,9 @@
 #!/usr/bin/env ruby
 
 require 'httparty'
-require 'parallel'
 require 'ruby-progressbar'
 
 module Spotify
-
   class API
     include HTTParty
     base_uri "ws.spotify.com"
@@ -14,7 +12,6 @@ module Spotify
       get "/search/1/track.json", query: { q: query }
     end
   end
-
 end
 
 # read input from file if filename was given, or STDIN otherwise
@@ -28,7 +25,7 @@ progress = ProgressBar.create(title: "0", total: tracks.size, format: "Matching 
 
 # match tracks
 matches = []
-tracks.each do |track|
+tracks.compact!.each do |track|
   results = Spotify::API.search "#{track[:artists].join(' ')} #{track[:title]}"
 
   if results && results['tracks']
